@@ -11,7 +11,7 @@ contract CertificadoAcademico is ERC721URIStorage, Ownable {
     // O consctructor define o nome da nossa coleção (Certificado Blockchain USP) e seu símbolo (USPC)
     constructor() ERC721("Certificado Blockchain USP", "USPC") Ownable(msg.sender) {}
 
-    // -- Função principal para emitir o certificado --
+    // -- Emitir o certificado --
     // Apenas o dono do contrato (instituição) pode chamar esta função
     function emitirCertificado(address aluno, string memory tokenURI) public onlyOwner returns (uint256) {
         uint256 tokenId = _nextTokenID++;
@@ -25,7 +25,13 @@ contract CertificadoAcademico is ERC721URIStorage, Ownable {
         return tokenId;
     }
 
-    // -- Função para tornar o certificado intransferível (Soulbound) --
+    // -- Revogar o Certificado --
+    // Possibilita que o dono (instituição) cancele um certificado (burn) em caso de erro ou fraude
+    function revogarCertificado(uint256 tokenId) public onlyOwner {
+        _burn(tokenId);
+    }
+
+    // -- Tornar o certificado intransferível (Soulbound) --
     // Essa função é chamada automaticamente pelo contrato antes de qualquer transferência
     function _update(address to, uint256 tokenId, address auth) internal override returns (address) {
         // Primeiro deixamos o contrato original fazer a lógica dele e descobrir quem é o dono atual (from)
