@@ -14,14 +14,30 @@ contract CertificadoAcademico is ERC721URIStorage, Ownable {
     // -- Função principal para emitir o certificado --
     // Apenas o dono do contrato (instituição) pode chamar esta função
     function emitirCertificado(address aluno, string memory tokenURI) public onlyOwner returns (uint256) {
-        uint256 tokenID = _nextTokenID++;
+        uint256 tokenId = _nextTokenID++;
         
         // Cria o NFT e envia para a carteira do aluno
-        _mint(aluno, tokenID);
+        _mint(aluno, tokenId);
         
         // Grava o link (metadata) no certificado recém-criado
-        _setTokenURI(tokenID, tokenURI);
+        _setTokenURI(tokenId, tokenURI);
 
-        return tokenID;
+        return tokenId;
     }
+
+    // -- Função para tornar o certificado intransferível (Soulbound) --
+    // Essa função é chamada automaticamente pelo contrato antes de qualquer transferência
+    function _update(address to, uint256 tokenId, address auth) internal override returns (address) {
+        // Primeiro deixamos o contrato original fazer a lógica dele e descobrir quem é o dono atual (from)
+        address from = super._update(to, tokenId, auth);
+
+        // Verificando se é uma tentativa de transferência entre carteiras
+        // Se "from" não for zero (não é criação) + "to" não for zero (não é destruição), então a transferência é bloqueada
+        if (from != address(0) && to != address(0)) {
+            revert("Este certificado e intransferivel!");
+        }
+
+        return from;
+    }
+    
 }
