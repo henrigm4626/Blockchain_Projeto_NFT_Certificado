@@ -1,3 +1,8 @@
+/*
+SSC0958 Blockchain e Criptomoedas - Projeto NFT: Certificado Digital
+Henrique Gualberto Marques | NUSP: 13692380
+*/
+
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
@@ -7,6 +12,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract CertificadoAcademico is ERC721URIStorage, Ownable {
     uint256 private _nextTokenID;
+
+    // Definindo eventos para facilitar a compreensão das operações realizadas
+    event CertificadoEmitido(address indexed aluno, uint256 tokenId, string tokenURI);
+    event CertificadoRevogado(uint256 tokenId);
+
 
     // O consctructor define o nome da nossa coleção (Certificado Blockchain USP) e seu símbolo (USPC)
     constructor() ERC721("Certificado Blockchain USP", "USPC") Ownable(msg.sender) {}
@@ -22,6 +32,8 @@ contract CertificadoAcademico is ERC721URIStorage, Ownable {
         // Grava o link (metadata) no certificado recém-criado
         _setTokenURI(tokenId, tokenURI);
 
+        emit CertificadoEmitido(aluno, tokenId, tokenURI);
+
         return tokenId;
     }
 
@@ -29,6 +41,8 @@ contract CertificadoAcademico is ERC721URIStorage, Ownable {
     // Possibilita que o dono (instituição) cancele um certificado (burn) em caso de erro ou fraude
     function revogarCertificado(uint256 tokenId) public onlyOwner {
         _burn(tokenId);
+
+        emit CertificadoRevogado(tokenId);
     }
 
     // -- Tornar o certificado intransferível (Soulbound) --
