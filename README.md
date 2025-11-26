@@ -1,6 +1,4 @@
-# Blockchain_Projeto_NFT_Certificado
-
-# Sistema de Certificação Acadêmica em Blockchain (SBT)
+# Sistema de Certificação Acadêmica em Blockchain
 
 Este projeto implementa um sistema de emissão de certificados acadêmicos digitais utilizando a rede Ethereum. O foco principal é a integridade e intransferibilidade dos diplomas através do conceito de **Soulbound Tokens (SBTs)**.
 
